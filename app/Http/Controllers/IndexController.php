@@ -30,10 +30,22 @@ class IndexController extends Controller
 			}
 		}
 
+		usort($scores, function($a, $b) {
+			return $b['total'] - $a['total'];
+		});
+
 		return view('welcome')->with([
-			'scores' => $scores
+			'scores' => array_slice($scores, 0, 30)
 		]);
 	}
 
+	public function register($device_id)
+	{
 
+	}
+
+	public function add_score($device_id, $score_id)
+	{
+
+	}
 }

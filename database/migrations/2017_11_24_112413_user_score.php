@@ -14,9 +14,8 @@ class UserScore extends Migration
      * @return void
      */
     public function up()
-    {
-		Schema::create('unlock_codes', function (Blueprint $table)
-		{
+	{
+		Schema::create('unlock_codes', function (Blueprint $table) {
 			$table->increments('id');
 
 			$table->string('code')->unique();
@@ -27,8 +26,7 @@ class UserScore extends Migration
 			$table->timestamps();
 		});
 
-		Schema::create('user_scores', function (Blueprint $table)
-		{
+		Schema::create('user_scores', function (Blueprint $table) {
 			$table->increments('id');
 
 			$table->integer('user_id')->unsigned()->index();
@@ -40,7 +38,7 @@ class UserScore extends Migration
 			$table->timestamps();
 		});
 
-		for($i = 0; $i < 30;)
+		for ($i = 0; $i < 30;)
 		{
 			try
 			{
@@ -49,14 +47,13 @@ class UserScore extends Migration
 
 				UnlockCode::create(['code' => $code, 'is_level_unlock' => 1]);
 				++$i;
-			}
-			catch(Exception $e)
+			} catch (Exception $e)
 			{
 
 			}
 		}
 
-		for($i = 0; $i < 30;)
+		for ($i = 0; $i < 30;)
 		{
 			try
 			{
@@ -65,20 +62,24 @@ class UserScore extends Migration
 
 				UnlockCode::create(['code' => $code, 'is_level_unlock' => 0]);
 				++$i;
-			}
-			catch(Exception $e)
+			} catch (Exception $e)
 			{
 
 			}
 		}
 
-		$user = User::create(['device_id' => '1']);
-		$unlock_code = UnlockCode::find(2);
+		/*for ($i = 0; $i < 5000; ++$i)
+		{
+			$user = User::create(['device_id' => $i, 'name' => $i]);
 
-		$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => $unlock_code->id]));
-		$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => 5]));
-		$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => 8]));
-    }
+			for ($j = 0, $k = rand(7, 30); $j < $k; ++$j)
+			{
+				$unlock_code = UnlockCode::inRandomOrder()->first();
+
+				$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => $unlock_code->id]));
+			}
+		}*/
+	}
 
     /**
      * Reverse the migrations.
