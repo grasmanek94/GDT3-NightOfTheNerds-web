@@ -15,15 +15,16 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'device_id'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public function Scores()
+	{
+		return $this->hasMany(UserScore::class);
+	}
+
+	public function UnlockCodes()
+	{
+		return $this->hasManyThrough(UnlockCode::class, UserScore::class, 'user_id', 'id', 'id', 'unlock_code_id');
+	}
 }
