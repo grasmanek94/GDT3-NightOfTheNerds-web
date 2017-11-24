@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'device_id'
+        'device_id', 'name'
     ];
 
     public function Scores()

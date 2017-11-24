@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Nerd of the Night</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -21,6 +21,11 @@
                 margin: 0;
             }
 
+            .black {
+                color: #101010;
+                font-family: 'Calibri', sans-serif;
+                font-weight: 100;
+            }
             .full-height {
                 height: 100vh;
             }
@@ -34,62 +39,48 @@
             .position-ref {
                 position: relative;
             }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    @endauth
-                </div>
-            @endif
-
+        <div class="flex-center">
             <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                <div class="col-md-12">
+                    <h1>
+                        Nerd Of The Night Scoreboard
+                    </h1>
+                    <div class="table-responsive">
+                        <table class="table black col-md-12">
+                            <thead>
+                                <tr>
+                                    <td class="col-md-9">Naam</td>
+                                    <td class="col-md-1">Unlocks</td>
+                                    <td class="col-md-1">Bonussen</td>
+                                    <td class="col-md-1">Totaal</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($scores as $score)
+                                <tr>
+                                    <td>
+                                        {{ $score['name'] }}
+                                    </td>
+                                    <td>
+                                        {{ $score['unlock'] }}
+                                    </td>
+                                    <td>
+                                        {{ $score['bonus'] }}
+                                    </td>
+                                    <td>
+                                        {{ $score['total'] }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </body>
+    <script src="/js/app.js"></script>
 </html>

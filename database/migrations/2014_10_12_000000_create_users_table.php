@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->increments('id');
 
             $table->string('device_id')->unique();
+			$table->string('name')->default('');
 
             $table->timestamps();
         });
