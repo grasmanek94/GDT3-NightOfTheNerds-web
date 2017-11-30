@@ -12,3 +12,6 @@
 */
 
 Route::get('/', 'IndexController@show');
+Route::get('/register/{device_id}', 'IndexController@register');
+Route::get('/add_score/{device_id}/{score_id}', 'IndexController@add_score');
+Route::get('/get_score/{device_id}/{score_id}', 'IndexController@get_score');
