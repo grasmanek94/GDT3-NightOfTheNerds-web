@@ -72,17 +72,17 @@ class IndexController extends Controller
 		$score_id = $real_score_id;
 
 		$score = UnlockCode::where('code', '=', $score_id)->first();
-		if($score == null)
+		if(!is_string($score_id) || $score->code !== $score_id)
 		{
 			return [
 				'success' => false
 			];
 		}
 
-		if($user->Scores()->where('unlock_code_id', '=', $score->id)->first() != null)
+		if($user->Scores()->where('unlock_code_id', '=', $score->id)->count() > 0)
 		{
 			return [
-				'success' => false
+				'success' => true
 			];
 		}
 
@@ -105,44 +105,37 @@ class IndexController extends Controller
 
 	public function get_score($device_id, $score_id)
 	{
-		$real_score_id = $this->encrypt($score_id, $device_id);
-		$score_id = $real_score_id;
+		if(env('APP_DEBUG') != true)
+		{
+			return [];
+		}
+		$enc_score_id = $this->encrypt($score_id, $device_id);
+		$dec_score_id = $this->decrypt($enc_score_id, $device_id);
 		return [
-			'score_id' => $score_id
+			'input' => [
+				'device_id' => $device_id,
+				'score_id' => $score_id
+			],
+			'score_id' => $enc_score_id,
+			'output' => [
+				'device_id' => $device_id,
+				'score_id' => $dec_score_id
+			]
 		];
 	}
 
 	// PHP: Encrypt Code:
-	public static function addpadding($string, $blocksize = 32)
+	public static function encrypt($string, $key)
 	{
-		$len = strlen($string);
-		$pad = $blocksize - ($len % $blocksize);
-		$string .= str_repeat(chr($pad), $pad);
-		return $string;
-	}
-	public static function encrypt($string = "", $key)
-	{
-		$iv = base64_decode("DWY6GHpKTc+ycZ+XCMFznML7nTCd3LnHk+7bQCwYKmQ=");
-		return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, self::addpadding($string), MCRYPT_MODE_CBC, $iv));
+		$iv = base64_decode("QUFBQUFBQUFBQUFBQUFBQQ==");
+		return base64_encode(openssl_encrypt($string, 'AES-128-CBC', $key, 0, $iv));
 	}
 
 	// PHP:Decrypt Code:
-	public static function strippadding($string)
-	{
-		$slast = ord(substr($string, -1));
-		$slastc = chr($slast);
-		$pcheck = substr($string, -$slast);
-		if(preg_match("/$slastc{".$slast."}/", $string)){
-			$string = substr($string, 0, strlen($string)-$slast);
-			return $string;
-		} else {
-			return false;
-		}
-	}
+
 	public static function decrypt($string, $key)
 	{
-		$iv = base64_decode("DWY6GHpKTc+ycZ+XCMFznML7nTCd3LnHk+7bQCwYKmQ=");
-		$string = base64_decode($string);
-		return self::strippadding(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $iv));
+		$iv = base64_decode("QUFBQUFBQUFBQUFBQUFBQQ==");
+		return openssl_decrypt(base64_decode($string), 'AES-128-CBC', $key, 0, $iv);
 	}
 }
