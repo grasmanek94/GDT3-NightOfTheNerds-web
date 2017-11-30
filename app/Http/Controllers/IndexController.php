@@ -12,7 +12,14 @@ class IndexController extends Controller
 
 		$scores = [];
 
-		$users = User::all();
+		$users = User::leftJoinRelations('Scores')
+			->groupBy('users.id')
+			->selectRaw('users.*, count(user_scores.id) as unlock_count')
+			->orderBy('unlock_count','desc')
+			->orderBy('created_at','asc')
+			->take(30)
+			->get();
+
 		foreach($users as $user)
 		{
 			$unlock = $user->UnlockCodes()->where('is_level_unlock', '=', true)->count();
@@ -30,12 +37,8 @@ class IndexController extends Controller
 			}
 		}
 
-		usort($scores, function($a, $b) {
-			return $b['total'] - $a['total'];
-		});
-
 		return view('welcome')->with([
-			'scores' => array_slice($scores, 0, 30)
+			'scores' => $scores
 		]);
 	}
 

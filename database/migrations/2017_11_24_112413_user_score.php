@@ -35,6 +35,8 @@ class UserScore extends Migration
 			$table->integer('unlock_code_id')->unsigned()->index();
 			$table->foreign('unlock_code_id')->references('id')->on('unlock_codes');
 
+			$table->unique(['user_id', 'unlock_code_id']);
+
 			$table->timestamps();
 		});
 
@@ -68,17 +70,24 @@ class UserScore extends Migration
 			}
 		}
 
-		/*for ($i = 0; $i < 5000; ++$i)
+		for ($i = 0; $i < 100; ++$i)
 		{
 			$user = User::create(['device_id' => $i, 'name' => $i]);
 
-			for ($j = 0, $k = rand(7, 30); $j < $k; ++$j)
+			for ($j = 0, $k = rand(2, 15); $j < $k; ++$j)
 			{
 				$unlock_code = UnlockCode::inRandomOrder()->first();
 
-				$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => $unlock_code->id]));
+				try
+				{
+					$user->Scores()->save(App\UserScore::create(['user_id' => $user->id, 'unlock_code_id' => $unlock_code->id]));
+				}
+				catch(Exception $e)
+				{
+
+				}
 			}
-		}*/
+		}
 	}
 
     /**
