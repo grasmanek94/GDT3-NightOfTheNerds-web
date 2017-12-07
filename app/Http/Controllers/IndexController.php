@@ -127,15 +127,37 @@ class IndexController extends Controller
 	// PHP: Encrypt Code:
 	public static function encrypt($string, $key)
 	{
-		$iv = base64_decode("QUFBQUFBQUFBQUFBQUFBQQ==");
-		return base64_encode(openssl_encrypt($string, 'AES-128-CBC', $key, 0, $iv));
+		$method = 'aes-256-cbc';
+
+		// Must be exact 32 chars (256 bit)
+		$password = substr(hash('sha256', $key, true), 0, 32);
+
+		// IV must be exact 16 chars (128 bit)
+		$iv =
+			chr(0x01) . chr(0x33) . chr(0x33) . chr(0x55) .
+			chr(0x33) . chr(0x10) . chr(0x55) . chr(0x33) .
+			chr(0x33) . chr(0x55) . chr(0x10) . chr(0x33) .
+			chr(0x55) . chr(0x33) . chr(0x33) . chr(0x01);
+
+		return base64_encode(openssl_encrypt($string, $method, $password, OPENSSL_RAW_DATA, $iv));
 	}
 
 	// PHP:Decrypt Code:
 
 	public static function decrypt($string, $key)
 	{
-		$iv = base64_decode("QUFBQUFBQUFBQUFBQUFBQQ==");
-		return openssl_decrypt(base64_decode($string), 'AES-128-CBC', $key, 0, $iv);
+		$method = 'aes-256-cbc';
+
+		// Must be exact 32 chars (256 bit)
+		$password = substr(hash('sha256', $key, true), 0, 32);
+
+		// IV must be exact 16 chars (128 bit)
+		$iv =
+			chr(0x01) . chr(0x33) . chr(0x33) . chr(0x55) .
+			chr(0x33) . chr(0x10) . chr(0x55) . chr(0x33) .
+			chr(0x33) . chr(0x55) . chr(0x10) . chr(0x33) .
+			chr(0x55) . chr(0x33) . chr(0x33) . chr(0x01);
+
+		return openssl_decrypt(base64_decode($string), $method, $password, OPENSSL_RAW_DATA, $iv);
 	}
 }
