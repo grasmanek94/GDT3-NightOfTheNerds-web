@@ -66,11 +66,11 @@ class IndexController extends Controller
 
 	public function add_score($device_id, $score_id)
 	{
+		$score_id = str_replace('-', '/', $score_id);
 		$user = User::register($device_id);
 
 		$real_score_id = $this->decrypt($score_id, $device_id);
 		$score_id = $real_score_id;
-
 		$score = UnlockCode::where('code', '=', $score_id)->first();
 		if(!is_string($score_id) || $score->code !== $score_id)
 		{
@@ -139,7 +139,7 @@ class IndexController extends Controller
 			chr(0x33) . chr(0x55) . chr(0x10) . chr(0x33) .
 			chr(0x55) . chr(0x33) . chr(0x33) . chr(0x01);
 
-		return base64_encode(openssl_encrypt($string, $method, $password, OPENSSL_RAW_DATA, $iv));
+		return str_replace('/', '-', base64_encode(openssl_encrypt($string, $method, $password, OPENSSL_RAW_DATA, $iv)));
 	}
 
 	// PHP:Decrypt Code:
@@ -158,6 +158,6 @@ class IndexController extends Controller
 			chr(0x33) . chr(0x55) . chr(0x10) . chr(0x33) .
 			chr(0x55) . chr(0x33) . chr(0x33) . chr(0x01);
 
-		return openssl_decrypt(base64_decode($string), $method, $password, OPENSSL_RAW_DATA, $iv);
+		return openssl_decrypt(base64_decode(str_replace('-', '/', $string)), $method, $password, OPENSSL_RAW_DATA, $iv);
 	}
 }
